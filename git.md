@@ -208,6 +208,133 @@ git branch -vv
 
 
 
+### git 撤销
+
+工作区
+
+​	如何撤回自己在工作目录中的修改
+
+git checkout --filename / git restore filename 会修改工作目录
+
+
+
+暂存区
+
+​	如何撤回自己的暂存
+
+git restore --staged filename
+
+版本库
+
+​	如何撤回自己的提交
+
+1. git commit --amend 注释写错了
+2. git add ./  git commit --amend
+
+### git commit --amend
+
+作用：
+
+这个命令会将暂存区中的文件提交
+
+如果自上次提交以来你还未做任何修改（例如，在上次提交之后，马上执行了此命令，）那么，快照保持不变，而你所修改的只是提交信息。
+
+如果你提交之后发现忘记了 暂存某些需要的修改，可以像下面这样操作：
+
+git commit -m 'initial commit'
+
+git add forgotten_file
+
+git commit -amend
+
+最终，你只会有一个提交，第二次提交将代替第一次提交的结果。
+
+
+
+git commit --amend原理？？（相当于创建分支吗）与 git reset 不同
+
+
+
+### reset
+
+git reset -soft HEAD~ （只动HEAD）
+
+这与改变HEAD自身不同（checkout所做的），reset移动 HEAD 指向的分支。
+
+本质上是撤销了上一次的 git commit 命令。当你运行 git commit 时，git会创建一个提交，并移动 HEAD 所指向的分支使其指向该提交。
+
+当你将它reset会HEAD~ （HEAD的父节点）时，其实就是把该分支移动回原来的位置，而不会改变索引和工作目录。现在可以在更新索引并再次运行 git commit 来完成 git commit --amend 所要做的事情了。
+
+
+
+git reset [--mixed] HEAD~ 等于 git reset HEAD~ （动HEAD， 动暂存区）
+
+它依然会撤销上一次提交，但还会  取消暂存 所有的东西。于是，我们回滚到了所有 git add 和 git commit 的命令执行之前。
+
+HEAD重置为第二个版本 暂存区重置为第二个版本
+
+
+
+git reset --hard HEAD~ （动HEAD，动了暂存区， 动了工作目录）跟 git checkout 有点像。。。
+
+必须注意--hard标记是 reset 命令的唯一危险用法，他也是 Git 会真正的销毁数据的仅有几个操作之一。其他任何形式的 reset 调用都可以轻松撤销，但是 --hard 选项不能，因为它强制覆盖了工作目录中的文件。在这种特殊情况下，我们的Git数据库中的一个提交内还留有该文件的v3版本，我们可以通过 reflog 来找回它。但是若该文件还未提交，Git仍会覆盖它导致无法恢复。
+
+### checkout reset --hard 区别
+
+git checkout 分支名(commit hash) & gitt reset --hard commithash
+
+1. checkout 只动 HEAD,指向另一个分支， --hard 动HEAD，而且带着分支一起走
+
+2. chechout对工作目录是安全的 --hard 是强制覆盖工作目录
+
+    
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+？？（git commit --amend == git reset -soft HEAD~ + git commit -m ''）
+
+git log：
+
+git reflog：只要是HEAD有变化，那么git reflog就会记录下来
+
+
+
+
+
+
+
+
+
+
+
+
+
+git restore git switch
+
 
 
 删除邮箱名
